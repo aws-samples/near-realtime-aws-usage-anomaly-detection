@@ -1,0 +1,148 @@
+[
+    {
+        "name": "lambda-invoke",
+        "description": "lambda detector",
+        "time_field": "eventTime",
+        "indices": [
+                "cwl-*"
+        ],
+        "feature_attributes":[{
+            "feature_name": "eventName",
+            "feature_enabled": true,
+            "aggregation_query": {
+                "event_name": {
+                     "value_count": {
+                         "field": "eventName.keyword"
+                     }
+                 }
+                }
+        }],
+        "filter_query": {
+            "bool": {
+                "filter": [
+                        {
+                            "term": {
+                                "eventName.keyword": {
+                                    "value": "Invoke",
+                                    "boost": 1.0
+                                }
+                            }
+                        }
+                ],
+                "adjust_pure_negative": true,
+                "boost": 1.0
+            }
+        },
+        "detection_interval": {
+            "period": {
+                "interval": 10,
+                "unit": "Minutes"
+            }
+        },
+        "window_delay": {
+            "period": {
+                "interval": 8,
+                "unit": "Minutes"
+            }
+        },
+        "shingle_size": 8,
+        "category_field": [
+            "requestParameters.functionName.keyword"
+        ]
+    },
+    {
+        "name": "ebs-create_volume",
+        "description": "ebs create volume detector",
+        "time_field": "eventTime",
+        "indices": [
+            "cwl-*"
+        ],
+        "feature_attributes":[{
+            "feature_name": "eventName",
+            "feature_enabled": true,
+            "aggregation_query": {
+                "event_name": {
+                    "value_count": {
+                            "field": "eventName.keyword"
+                        }
+                }
+            }
+        }],
+        "filter_query": {
+            "bool": {
+                "filter": [{
+                    "term": {
+                        "eventName.keyword": {
+                            "value": "CreateVolume",
+                            "boost": 1.0
+                        }
+                    }
+                }],
+                "adjust_pure_negative": true,
+                "boost": 1.0
+            }
+        },
+        "detection_interval": {
+            "period": {
+                "interval": 10,
+                "unit": "Minutes"
+            }
+        },
+        "window_delay": {
+            "period": {
+                "interval": 8,
+                "unit": "Minutes"
+            }
+        },
+        "shingle_size": 8
+    },
+    {
+        "name": "ec2-run_instances",
+        "description": "ec2 max count detector",
+        "time_field": "eventTime",
+        "indices": [
+            "cwl-*"
+        ],
+        "feature_attributes":[{
+            "feature_name": "eventName",
+            "feature_enabled": true,
+            "aggregation_query": {
+                "event_name": {
+                    "sum": {
+                            "field": "requestParameters.instancesSet.items.maxCount"
+                        }
+                }
+            }
+        }],
+        "filter_query": {
+            "bool": {
+                "filter": [{
+                    "range": {
+                        "eventName.keyword": {
+                            "from": "RunInstances",
+                            "to": null,
+                                "include_lower": true,
+                                "include_upper": true,
+                                "boost": 1.0
+                        }
+                    }
+                }],
+                "adjust_pure_negative": true,
+                "boost": 1.0
+            }
+        },
+        "detection_interval": {
+            "period": {
+                "interval": 10,
+                "unit": "Minutes"
+            }
+        },
+        "window_delay": {
+            "period": {
+                "interval": 8,
+                "unit": "Minutes"
+            }
+        },
+        "shingle_size": 8
+    }
+]
