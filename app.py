@@ -10,7 +10,7 @@ usage_anomaly_detector_infra_stack = UsageAnomalyDetectorStack(app, app.node.try
         region=getenv('AWS_REGION', getenv('CDK_DEFAULT_REGION')), 
         account=getenv('AWS_ACCOUNT_ID', getenv('CDK_DEFAULT_ACCOUNT'))
     ),
-    description="Usage Anomaly Detector Stack uksb-1tupbocl1"
+    description="Usage Anomaly Detector Stack (uksb-1tupbocl1) "
 )
 
 tags={
