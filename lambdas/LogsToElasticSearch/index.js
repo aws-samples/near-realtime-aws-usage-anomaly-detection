@@ -5,6 +5,7 @@ var zlib = require('zlib');
 var crypto = require('crypto');
 
 var endpoint = process.env.OPENSEARCH_DOMAIN_ENDPOINT
+var opensearch_version = process.env.OPENSEARCH_VERSION
 
 // Set this to true if you want to debug why data isn't making it to
 // your Elasticsearch cluster. This will enable logging of failed items
@@ -76,7 +77,9 @@ function transform(payload) {
 
         var action = { "index": {} };
         action.index._index = indexName;
-        action.index._type = payload.logGroup;
+        if (opensearch_version.startsWith('OPENSEARCH_1_')){
+            action.index._type = payload.logGroup;
+        }
         action.index._id = logEvent.id;
 
         bulkRequestBody += [

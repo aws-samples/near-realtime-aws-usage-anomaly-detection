@@ -1,3 +1,4 @@
+
 # Near-Real Time Usage Anomaly Detection using OpenSearch
 
 Detecting usage anomalies promptly is crucial because they can result in unforeseen charges. The Near-Real Time Usage Anomaly Detection solutions offers the capabilities to address this issue effectively. 
@@ -37,7 +38,7 @@ The primary components of the solution's architecture are:
 - OpenSearch Dashboards access enabled by user authentication through the OpenSearchUser Cognito.
 
 ## Pre-requisites
-- [AWS Cloud Development Kit](https://docs.aws.amazon.com/cdk/v2/guide/home.html) version 2.69 or higher.
+- [AWS Cloud Development Kit](https://docs.aws.amazon.com/cdk/v2/guide/home.html) version 2.100.0.
 -  All required libraries installed using python pip. Below commands are run locally from the root of the repository.
 
     ```
@@ -47,24 +48,37 @@ The primary components of the solution's architecture are:
 The above commands will also download the python libraries for the lambda layer.
 
 ## Deployment
-- Deploy the stack:  
+- Deploy complete stack:  
 
     ```
-    cdk deploy --parameters opensearchAlertEmail='<your-alert-mailing-list@email.com>'
-    ```
+    cdk deploy \
+    --context opensearch-version='<OPENSEARCH_n_m>' \
+    --parameters opensearchAlertEmail='<alert_email>'
+    ```  
+    This will do the following in the target account : 
+    1. Create CloudTrail trails with target CloudWatch log-group for the trails.
+    2. Create OpenSearch Domain with Cognito auth for user management.
+    3. Setup Cloudwatch subscription filter (using Lambda) to forward logs to OpenSearch.
+    4. Create Lambda functions for Opensearch configuration automation(IAM Role mapping, anomaly detector creation).
+    5. Create SNS topics for alerts and notification lambda for enriched notifications.  
 
-This will do the following in the target account : 
-1. Create CloudTrail trails with target CloudWatch log-group for the trails.
-2. Create OpenSearch Domain with Cognito auth for user management.
-3. Setup Cloudwatch subscription filter (using Lambda) to forward logs to OpenSearch.
-4. Create Lambda functions for Opensearch configuration automation(IAM Role mapping, anomaly detector creation).
-5. Create SNS topics for alerts and notification lambda for enriched notifications.  
+- Deploy to existing OpenSearch domain:  
+
+    ```
+    cdk deploy \
+    --context opensearch-version='<OPENSEARCH_n_m>' \
+    --context opensearch-domain-endpoint='<endpoint_domain>' \
+    --context opensearch-access-role-arn='<iam_role_arn>' \
+    --parameters opensearchAlertEmail='<alert_email>'
+    ```  
+    This will create CloudTrail trail and ingest the trails to the provided OpenSearch domain. It will also create the anomaly detectors in the provided domain.  
+    For setting up the access IAM role, please check [existing_domain_deploy](./existing_domain_deploy.md) guide.  
 
 > NOTE: The IAM roles use AWS ManagedPolicies for various cases like lambdaExecution, etc. If required, please update to use self managed policies.  
 
 You can set the context to disable Lambda logging with the trail by setting: `--context enable-lambda-trail=false`. This will skip the Lambda Anomaly detector creation.  
 
-Furthermore, please examine the notification subscription confirmation email delivered to `<your-alert-mailing-list@email.com>` and confirm your subscription in order to obtain alert emails.
+Furthermore, please examine the notification subscription confirmation email delivered to `<alert_email>` and confirm your subscription in order to obtain alert emails.
 
 ## Usage
 Once the deployment process concludes, the output from the CDK stack offers essential links for utilizing the solution.  
@@ -107,4 +121,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.

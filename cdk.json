@@ -38,6 +38,9 @@
       "aws-cn"
     ],
     "stack-name": "usage-anomaly-detector-stack",
-    "enable-lambda-trail": "true"
+    "enable-lambda-trail": "true",
+    "opensearch-version": "OPENSEARCH_2_9",
+    "opensearch-domain-endpoint": "",
+    "opensearch-access-role-arn": ""
   }
 }
