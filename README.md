@@ -53,7 +53,7 @@ The above commands will also download the python libraries for the lambda layer.
     ```
     cdk deploy \
     --context opensearch-version='<OPENSEARCH_n_m>' \
-    --parameters opensearchAlertEmail='<alert_email>'
+    --parameters opensearchalertemail='<alert_email>'
     ```  
     This will do the following in the target account : 
     1. Create CloudTrail trails with target CloudWatch log-group for the trails.
@@ -69,7 +69,7 @@ The above commands will also download the python libraries for the lambda layer.
     --context opensearch-version='<OPENSEARCH_n_m>' \
     --context opensearch-domain-endpoint='<endpoint_domain>' \
     --context opensearch-access-role-arn='<iam_role_arn>' \
-    --parameters opensearchAlertEmail='<alert_email>'
+    --parameters opensearchalertemail='<alert_email>'
     ```  
     This will create CloudTrail trail and ingest the trails to the provided OpenSearch domain. It will also create the anomaly detectors in the provided domain.  
     For setting up the access IAM role, please check [existing_domain_deploy](./existing_domain_deploy.md) guide.  
